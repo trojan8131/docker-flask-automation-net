@@ -1,0 +1,38 @@
+mark.marker-red {
+    color:#0020ad;
+    background: #f9ffc3;
+}
+
+
+body {
+    background-color: rgb(58, 58, 58);
+ }
+ #more-options {
+    display: none;
+  }
+  #hidden-panel1 {
+    display: none;
+  }
+  #hidden-panel2 {
+    display: none;
+  }
+  #hidden-panel3 {
+    display: none;
+  }
+  #hidden-panel4 {
+    display: none;
+  }
+  .btn-outline-secondary {
+    border-color: #6c757d;
+  }
+  
+  .btn-outline-secondary:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+  }
+  
+  .fas.fa-arrow-up:before {
+    content: "\f062";
+  }
+  

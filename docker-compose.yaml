@@ -1,0 +1,19 @@
+version: '3'
+services:
+  docker-flask:
+    image: docker-flask-image
+    container_name: docker-flask
+    volumes:
+      - /opt/docker-flask-automation-net:/docker-flask/app/
+    ports:
+      - "0.0.0.0:80:5000"
+    dns: 
+      - 172.19.0.1
+    restart: always
+    networks:
+      network-flask:
+        ipv4_address: 172.19.0.5
+
+networks:
+  network-flask:
+    external: true
