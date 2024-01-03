@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-light p-3 rounded code-block border border-primary">
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Nazwa urządzenia</th>
+                <th>Adres IP</th>
+                <th>Grupy</th>
+            </tr>
+            {% for device_name,items in inventory.items() %}
+                <tr>
+                <td>{{device_name}}</td>
+                <td>{{items["hostname"]}}</td>
+                <td>{{items["groups"]}}</td>
+                
+                </tr>
+            {% endfor %}
+        </thead>
+    </table>
+</div>
+{% endblock content %}

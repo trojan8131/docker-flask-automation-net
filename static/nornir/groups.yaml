@@ -1,0 +1,4 @@
+router:
+    password: cisco    
+    username: cisco
+    platform: ios
