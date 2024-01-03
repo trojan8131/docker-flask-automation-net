@@ -7,13 +7,16 @@
                 <th>Nazwa urządzenia</th>
                 <th>Adres IP</th>
                 <th>Grupy</th>
+                <th>Akcje</th>
+                
             </tr>
             {% for device_name,items in inventory.items() %}
                 <tr>
                 <td>{{device_name}}</td>
                 <td>{{items["hostname"]}}</td>
                 <td>{{items["groups"]}}</td>
-                
+                <td> <a href="{{url_for('nornir_facts',device=device_name)}}" class="btn btn-primary"> Facts </a> </td>
+
                 </tr>
             {% endfor %}
         </thead>

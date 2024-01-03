@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-light p-3 rounded code-block border border-primary">
+    <div class="container mt-3">
+        <h2>Fakty o urządzeniu {{device}}</h2>
+      
+        <table class="table table-striped table-bordered">
+          <tbody>
+            {% for index, fact in nornir_napalm_facts.items() %}
+              <tr>
+                <td>{{ index }}</td>
+                <td>{{ fact }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+</div>
+{% endblock content %}

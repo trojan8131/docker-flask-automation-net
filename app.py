@@ -4,7 +4,10 @@ from jinja2 import Environment, FileSystemLoader
 from tabulate import tabulate
 import yaml
 
-
+from nornir import InitNornir
+from nornir_napalm.plugins.tasks import napalm_get
+from nornir_utils.plugins.functions import print_result
+from nornir_inspect import nornir_inspect
 
 
 app = Flask(__name__)
@@ -22,6 +25,14 @@ def homepage():
 def inventory_nornir():
     inventory=yaml.load(open("static/nornir/hosts.yaml","r"),Loader=yaml.SafeLoader)
     return render_template("inventory_nornir.html",inventory=inventory)
+
+@app.route("/nornir_facts/<device>")
+def nornir_facts(device):
+    nr=InitNornir(config_file="static/nornir/config.yaml")
+    nr=nr.filter(name=device)
+    result=nr.run(napalm_get,getters=["facts"])
+    nornir_napalm_facts=result[device][0].result["facts"]
+    return render_template("nornir_facts.html",nornir_napalm_facts=nornir_napalm_facts,device=device)
 
 
 
