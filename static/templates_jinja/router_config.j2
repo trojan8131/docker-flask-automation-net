@@ -1,0 +1,33 @@
+hostname {{ device_name }}
+!
+!
+snmp-server community {{ snmp_community }} RO
+!
+username cisco privilege 15 secret cisco
+!
+interface Vlan1
+ ip address {{ subnet }}.1 255.255.255.192
+!
+interface Vlan2
+ ip address {{ subnet }}.65 255.255.255.192
+!
+interface Vlan3
+ ip address {{ subnet }}.129 255.255.255.192
+
+{% if vlan_dhcp %}
+ip dhcp excluded-address {{ subnet }}.193
+!
+ip dhcp pool LAN
+ network {{ subnet }}.192 255.255.255.192
+ default-router {{ subnet }}.193
+!
+interface Vlan4
+ ip address {{ subnet }}.193 255.255.255.192
+!
+{% endif %}
+!
+
+
+
+
+

@@ -21,3 +21,212 @@
 2024-01-03 16:54:22,631 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
 2024-01-03 17:05:56,643 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
 2024-01-03 17:09:09,527 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
+2024-01-07 15:08:48,835 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
+2024-01-07 15:08:51,921 - nornir.core.task -    ERROR -      start() - Host 'R1': task 'napalm_get' failed with traceback:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1104, in establish_connection
+    self.remote_conn_pre.connect(**ssh_connect_params)
+  File "/usr/local/lib/python3.10/site-packages/paramiko/client.py", line 388, in connect
+    raise NoValidConnectionsError(errors)
+paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 192.168.1.50
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 113, in _netmiko_open
+    self._netmiko_device = ConnectHandler(
+  File "/usr/local/lib/python3.10/site-packages/netmiko/ssh_dispatcher.py", line 388, in ConnectHandler
+    return ConnectionClass(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 462, in __init__
+    self._open()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 467, in _open
+    self.establish_connection()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1126, in establish_connection
+    raise NetmikoTimeoutException(msg)
+netmiko.exceptions.NetmikoTimeoutException: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios 192.168.1.50:22
+
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/task.py", line 99, in start
+    r = self.task(self, **self.params)
+  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/tasks/napalm_get.py", line 32, in napalm_get
+    device = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 494, in get_connection
+    self.open_connection(
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 546, in open_connection
+    conn_obj.open(
+  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/connections/__init__.py", line 57, in open
+    connection.open()
+  File "/usr/local/lib/python3.10/site-packages/napalm/ios/ios.py", line 170, in open
+    self.device = self._netmiko_open(
+  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 122, in _netmiko_open
+    raise ConnectionException("Cannot connect to {}".format(self.hostname))
+napalm.base.exceptions.ConnectionException: Cannot connect to 192.168.1.50
+
+2024-01-07 15:09:01,736 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
+2024-01-07 15:09:04,798 - nornir.core.task -    ERROR -      start() - Host 'R1': task 'napalm_get' failed with traceback:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1104, in establish_connection
+    self.remote_conn_pre.connect(**ssh_connect_params)
+  File "/usr/local/lib/python3.10/site-packages/paramiko/client.py", line 388, in connect
+    raise NoValidConnectionsError(errors)
+paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 192.168.1.50
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 113, in _netmiko_open
+    self._netmiko_device = ConnectHandler(
+  File "/usr/local/lib/python3.10/site-packages/netmiko/ssh_dispatcher.py", line 388, in ConnectHandler
+    return ConnectionClass(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 462, in __init__
+    self._open()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 467, in _open
+    self.establish_connection()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1126, in establish_connection
+    raise NetmikoTimeoutException(msg)
+netmiko.exceptions.NetmikoTimeoutException: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios 192.168.1.50:22
+
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/task.py", line 99, in start
+    r = self.task(self, **self.params)
+  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/tasks/napalm_get.py", line 32, in napalm_get
+    device = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 494, in get_connection
+    self.open_connection(
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 546, in open_connection
+    conn_obj.open(
+  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/connections/__init__.py", line 57, in open
+    connection.open()
+  File "/usr/local/lib/python3.10/site-packages/napalm/ios/ios.py", line 170, in open
+    self.device = self._netmiko_open(
+  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 122, in _netmiko_open
+    raise ConnectionException("Cannot connect to {}".format(self.hostname))
+napalm.base.exceptions.ConnectionException: Cannot connect to 192.168.1.50
+
+2024-01-08 16:49:20,826 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
+2024-01-08 16:49:23,919 - nornir.core.task -    ERROR -      start() - Host 'R1': task 'napalm_get' failed with traceback:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1104, in establish_connection
+    self.remote_conn_pre.connect(**ssh_connect_params)
+  File "/usr/local/lib/python3.10/site-packages/paramiko/client.py", line 388, in connect
+    raise NoValidConnectionsError(errors)
+paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 192.168.1.50
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 113, in _netmiko_open
+    self._netmiko_device = ConnectHandler(
+  File "/usr/local/lib/python3.10/site-packages/netmiko/ssh_dispatcher.py", line 388, in ConnectHandler
+    return ConnectionClass(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 462, in __init__
+    self._open()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 467, in _open
+    self.establish_connection()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1126, in establish_connection
+    raise NetmikoTimeoutException(msg)
+netmiko.exceptions.NetmikoTimeoutException: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios 192.168.1.50:22
+
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/task.py", line 99, in start
+    r = self.task(self, **self.params)
+  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/tasks/napalm_get.py", line 32, in napalm_get
+    device = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 494, in get_connection
+    self.open_connection(
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 546, in open_connection
+    conn_obj.open(
+  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/connections/__init__.py", line 57, in open
+    connection.open()
+  File "/usr/local/lib/python3.10/site-packages/napalm/ios/ios.py", line 170, in open
+    self.device = self._netmiko_open(
+  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 122, in _netmiko_open
+    raise ConnectionException("Cannot connect to {}".format(self.hostname))
+napalm.base.exceptions.ConnectionException: Cannot connect to 192.168.1.50
+
+2024-01-08 16:49:55,115 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
+2024-01-08 16:49:58,172 - nornir.core.task -    ERROR -      start() - Host 'R1': task 'napalm_get' failed with traceback:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1104, in establish_connection
+    self.remote_conn_pre.connect(**ssh_connect_params)
+  File "/usr/local/lib/python3.10/site-packages/paramiko/client.py", line 388, in connect
+    raise NoValidConnectionsError(errors)
+paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 192.168.1.50
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 113, in _netmiko_open
+    self._netmiko_device = ConnectHandler(
+  File "/usr/local/lib/python3.10/site-packages/netmiko/ssh_dispatcher.py", line 388, in ConnectHandler
+    return ConnectionClass(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 462, in __init__
+    self._open()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 467, in _open
+    self.establish_connection()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1126, in establish_connection
+    raise NetmikoTimeoutException(msg)
+netmiko.exceptions.NetmikoTimeoutException: TCP connection to device failed.
+
+Common causes of this problem are:
+1. Incorrect hostname or IP address.
+2. Wrong TCP port.
+3. Intermediate firewall blocking access.
+
+Device settings: cisco_ios 192.168.1.50:22
+
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/task.py", line 99, in start
+    r = self.task(self, **self.params)
+  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/tasks/napalm_get.py", line 32, in napalm_get
+    device = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 494, in get_connection
+    self.open_connection(
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 546, in open_connection
+    conn_obj.open(
+  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/connections/__init__.py", line 57, in open
+    connection.open()
+  File "/usr/local/lib/python3.10/site-packages/napalm/ios/ios.py", line 170, in open
+    self.device = self._netmiko_open(
+  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 122, in _netmiko_open
+    raise ConnectionException("Cannot connect to {}".format(self.hostname))
+napalm.base.exceptions.ConnectionException: Cannot connect to 192.168.1.50
+
+2024-01-08 17:03:40,650 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
