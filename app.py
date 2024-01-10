@@ -6,7 +6,6 @@ import yaml
 
 from nornir import InitNornir
 from nornir_napalm.plugins.tasks import napalm_get
-from nornir_utils.plugins.functions import print_result
 from nornir_inspect import nornir_inspect
 
 from flask_wtf import FlaskForm
@@ -15,12 +14,29 @@ from wtforms import (StringField, TextAreaField, IntegerField, BooleanField,
 from wtforms.validators import InputRequired, Length
 from jinja2 import Template
 
+from nornir_netmiko.tasks import netmiko_send_config
+from nornir.core.inventory import Host,Group
+from nornir_rich.functions import print_result
+
+
+
+
+############ Flask Config ##########
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 
-routes={"Odcinek 12":[["/inventory_nornir","Nornir Inventory","Urządzenia z hosts.yaml","success"]],
-        "Odcinek 15":[["/router_config_form","Formularz konfiguracji","Formularz konfiguracji routera","success"]]
+########### Routes ###########
+
+
+
+routes={"Odcinek 13/14":[["/inventory_nornir","Nornir Inventory","Urządzenia z hosts.yaml","success"]],
+        "Odcinek 15/16":[["/router_config_form","Formularz konfiguracji","Formularz konfiguracji routera","success"]]
 }
+
+
+
+########### Forms #########
 
 class DeviceForm(FlaskForm):
     device_name= StringField("Nazwa Urządzenia", validators=[InputRequired(),Length(min=2,max=10)])
@@ -29,11 +45,12 @@ class DeviceForm(FlaskForm):
                        choices=['public', 'store-zabbix', 'dc-zabbix'],
                        validators=[InputRequired()])
     vlan_dhcp = BooleanField('Vlan DHCP')
+    send_config = BooleanField("Czy wysłać konfigurację do podłączonego urządzenia")
 
 
 
 
-
+############# Code ############
 
 @app.route("/")
 def homepage():
@@ -55,8 +72,13 @@ def nornir_facts(device):
 
 @app.route('/router_config_form', methods=['POST',"GET"])
 def router_config_form():
-    form=DeviceForm()
+    def clear(host):
+        return False
 
+
+
+    form=DeviceForm()
+    error=None
     if form.validate_on_submit():
         data={
             "device_name": form.device_name.data,
@@ -65,10 +87,31 @@ def router_config_form():
             "vlan_dhcp":form.vlan_dhcp.data
         }
         with open("static/templates_jinja/router_config.j2") as file:
-            cisco_template= Template(file.read(), keep_trailing_newline=True)
-        
-        cisco_config=cisco_template.render(data)
-        return render_template('router_config.html',config=cisco_config.replace("\n","<br>"))
+            cisco_template= Template(file.read())
+        result=cisco_template.render(data)
+
+        if form.send_config.data:
+            nr= InitNornir("static/nornir/config.yaml")
+            nr=nr.filter(clear)
+            new_host= Host(
+                name="console",
+                hostname="192.168.1.80",
+                platform="cisco_ios_telnet",
+                port="2000"
+            )
+            nr.inventory.hosts["console"]=new_host
+            result=nr.run(netmiko_send_config,config_commands=result.splitlines())
+
+            if result["console"][0].failed:
+                error="Problem z podłączeniem do urządzenia"
+                result=""
+            else:
+                result=result["console"][0].result
+
+
+
+
+        return render_template('router_config.html',result=result.replace("\n","<br>"),error=error)
 
     return render_template('router_config_form.html', form=form)
 

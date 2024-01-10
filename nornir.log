@@ -1,232 +1,211 @@
-2024-01-03 16:45:38,717 -  nornir.core -  WARNING -        run() - Task 'napalm_get' has not been run – 0 hosts selected
-2024-01-03 16:46:28,319 -  nornir.core -  WARNING -        run() - Task 'napalm_get' has not been run – 0 hosts selected
-2024-01-03 16:46:29,176 -  nornir.core -  WARNING -        run() - Task 'napalm_get' has not been run – 0 hosts selected
-2024-01-03 16:46:45,277 -  nornir.core -  WARNING -        run() - Task 'napalm_get' has not been run – 0 hosts selected
-2024-01-03 16:47:10,577 -  nornir.core -  WARNING -        run() - Task 'napalm_get' has not been run – 0 hosts selected
-2024-01-03 16:47:40,146 -  nornir.core -  WARNING -        run() - Task 'napalm_get' has not been run – 0 hosts selected
-2024-01-03 16:47:52,442 -  nornir.core -  WARNING -        run() - Task 'napalm_get' has not been run – 0 hosts selected
-2024-01-03 16:48:10,961 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts', 'interfaces']} on 1 hosts
-2024-01-03 16:50:08,797 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:50:27,724 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:50:53,712 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:51:06,801 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:51:23,105 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:51:46,637 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:52:02,978 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:52:49,272 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:53:02,694 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:53:19,313 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:53:34,554 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:54:01,767 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 16:54:22,631 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 17:05:56,643 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-03 17:09:09,527 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-07 15:08:48,835 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-07 15:08:51,921 - nornir.core.task -    ERROR -      start() - Host 'R1': task 'napalm_get' failed with traceback:
+2024-01-10 13:12:23,195 -  nornir.core -     INFO -        run() - Running task 'netmiko_send_config' with args {'config_commands': ['hostname R1', '!', '!', 'snmp-server community dc-zabbix RO', '!', 'username cisco privilege 15 secret cisco', '!', 'interface Vlan1', ' ip address 10.72.176.1 255.255.255.192', '!', 'interface Vlan2', ' ip address 10.72.176.65 255.255.255.192', '!', 'interface Vlan3', ' ip address 10.72.176.129 255.255.255.192', '', 'ip dhcp excluded-address 10.72.176.193', '!', 'ip dhcp pool LAN', ' network 10.72.176.192 255.255.255.192', ' default-router 10.72.176.193', '!', 'interface Vlan4', ' ip address 10.72.176.193 255.255.255.192', '!', '', '!']} on 1 hosts
+2024-01-10 13:15:49,725 -  nornir.core -     INFO -        run() - Running task 'netmiko_send_config' with args {'config_commands': ['hostname R1', '!', '!', 'snmp-server community dc-zabbix RO', '!', 'username cisco privilege 15 secret cisco', '!', 'interface Vlan1', ' ip address 10.72.176.1 255.255.255.192', '!', 'interface Vlan2', ' ip address 10.72.176.65 255.255.255.192', '!', 'interface Vlan3', ' ip address 10.72.176.129 255.255.255.192', '', 'ip dhcp excluded-address 10.72.176.193', '!', 'ip dhcp pool LAN', ' network 10.72.176.192 255.255.255.192', ' default-router 10.72.176.193', '!', 'interface Vlan4', ' ip address 10.72.176.193 255.255.255.192', '!', '', '!']} on 1 hosts
+2024-01-10 13:15:52,925 - nornir.core.task -    ERROR -      start() - Host 'console': task 'netmiko_send_config' failed with traceback:
 Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1104, in establish_connection
-    self.remote_conn_pre.connect(**ssh_connect_params)
-  File "/usr/local/lib/python3.10/site-packages/paramiko/client.py", line 388, in connect
-    raise NoValidConnectionsError(errors)
-paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 192.168.1.50
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 113, in _netmiko_open
-    self._netmiko_device = ConnectHandler(
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/task.py", line 99, in start
+    r = self.task(self, **self.params)
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/tasks/netmiko_send_config.py", line 28, in netmiko_send_config
+    net_connect = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 494, in get_connection
+    self.open_connection(
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 546, in open_connection
+    conn_obj.open(
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/connections/netmiko.py", line 59, in open
+    connection = ConnectHandler(**parameters)
   File "/usr/local/lib/python3.10/site-packages/netmiko/ssh_dispatcher.py", line 388, in ConnectHandler
     return ConnectionClass(*args, **kwargs)
   File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 462, in __init__
     self._open()
   File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 467, in _open
     self.establish_connection()
-  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1126, in establish_connection
-    raise NetmikoTimeoutException(msg)
-netmiko.exceptions.NetmikoTimeoutException: TCP connection to device failed.
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1092, in establish_connection
+    self.telnet_login()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/cisco_base_connection.py", line 194, in telnet_login
+    raise NetmikoAuthenticationException(msg)
+netmiko.exceptions.NetmikoAuthenticationException: Login failed: 192.168.1.80
 
-Common causes of this problem are:
-1. Incorrect hostname or IP address.
-2. Wrong TCP port.
-3. Intermediate firewall blocking access.
-
-Device settings: cisco_ios 192.168.1.50:22
-
-
+2024-01-10 13:16:19,457 - nornir.core.task -    ERROR -      start() - Host 'console': task 'netmiko_send_config' failed with traceback:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/netmiko/cisco_base_connection.py", line 111, in telnet_login
+    output = self.read_channel()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 96, in wrapper_decorator
+    return_val = func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 612, in read_channel
+    new_data += self.channel.read_channel()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/channel.py", line 126, in read_channel
+    return self.remote_conn.read_very_eager().decode(self.encoding, "ignore")
+  File "/usr/local/lib/python3.10/telnetlib.py", line 368, in read_very_eager
+    return self.read_very_lazy()
+  File "/usr/local/lib/python3.10/telnetlib.py", line 405, in read_very_lazy
+    raise EOFError('telnet connection closed')
+EOFError: telnet connection closed
 
 During handling of the above exception, another exception occurred:
 
 Traceback (most recent call last):
   File "/usr/local/lib/python3.10/site-packages/nornir/core/task.py", line 99, in start
     r = self.task(self, **self.params)
-  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/tasks/napalm_get.py", line 32, in napalm_get
-    device = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/tasks/netmiko_send_config.py", line 28, in netmiko_send_config
+    net_connect = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
   File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 494, in get_connection
     self.open_connection(
   File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 546, in open_connection
     conn_obj.open(
-  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/connections/__init__.py", line 57, in open
-    connection.open()
-  File "/usr/local/lib/python3.10/site-packages/napalm/ios/ios.py", line 170, in open
-    self.device = self._netmiko_open(
-  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 122, in _netmiko_open
-    raise ConnectionException("Cannot connect to {}".format(self.hostname))
-napalm.base.exceptions.ConnectionException: Cannot connect to 192.168.1.50
-
-2024-01-07 15:09:01,736 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-07 15:09:04,798 - nornir.core.task -    ERROR -      start() - Host 'R1': task 'napalm_get' failed with traceback:
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1104, in establish_connection
-    self.remote_conn_pre.connect(**ssh_connect_params)
-  File "/usr/local/lib/python3.10/site-packages/paramiko/client.py", line 388, in connect
-    raise NoValidConnectionsError(errors)
-paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 192.168.1.50
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 113, in _netmiko_open
-    self._netmiko_device = ConnectHandler(
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/connections/netmiko.py", line 59, in open
+    connection = ConnectHandler(**parameters)
   File "/usr/local/lib/python3.10/site-packages/netmiko/ssh_dispatcher.py", line 388, in ConnectHandler
     return ConnectionClass(*args, **kwargs)
   File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 462, in __init__
     self._open()
   File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 467, in _open
     self.establish_connection()
-  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1126, in establish_connection
-    raise NetmikoTimeoutException(msg)
-netmiko.exceptions.NetmikoTimeoutException: TCP connection to device failed.
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1092, in establish_connection
+    self.telnet_login()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/cisco_base_connection.py", line 174, in telnet_login
+    raise NetmikoAuthenticationException(msg)
+netmiko.exceptions.NetmikoAuthenticationException: Login failed: 192.168.1.80
 
-Common causes of this problem are:
-1. Incorrect hostname or IP address.
-2. Wrong TCP port.
-3. Intermediate firewall blocking access.
-
-Device settings: cisco_ios 192.168.1.50:22
-
-
-
-During handling of the above exception, another exception occurred:
-
+2024-01-10 16:50:56,883 -  nornir.core -     INFO -        run() - Running task 'netmiko_send_config' with args {'config_commands': ['hostname R1', '!', '!', 'snmp-server community public RO', '!', 'username cisco privilege 15 secret cisco', '!', 'interface Vlan1', ' ip address 10.10.10.1 255.255.255.192', '!', 'interface Vlan2', ' ip address 10.10.10.65 255.255.255.192', '!', 'interface Vlan3', ' ip address 10.10.10.129 255.255.255.192', '', '!']} on 1 hosts
+2024-01-10 16:53:22,591 -  nornir.core -     INFO -        run() - Running task 'netmiko_send_config' with args {'config_commands': ['hostname R1', '!', '!', 'snmp-server community public RO', '!', 'username cisco privilege 15 secret cisco', '!', 'interface Vlan1', ' ip address 10.10.10.1 255.255.255.192', '!', 'interface Vlan2', ' ip address 10.10.10.65 255.255.255.192', '!', 'interface Vlan3', ' ip address 10.10.10.129 255.255.255.192', '', 'ip dhcp excluded-address 10.10.10.193', '!', 'ip dhcp pool LAN', ' network 10.10.10.192 255.255.255.192', ' default-router 10.10.10.193', '!', 'interface Vlan4', ' ip address 10.10.10.193 255.255.255.192', '!', '', '!']} on 1 hosts
+2024-01-10 16:55:11,087 -  nornir.core -     INFO -        run() - Running task 'netmiko_send_config' with args {'config_commands': ['hostname R2', '!', '!', 'snmp-server community store-zabbix RO', '!', 'username cisco privilege 15 secret cisco', '!', 'interface Vlan1', ' ip address 10.10.10.1 255.255.255.192', '!', 'interface Vlan2', ' ip address 10.10.10.65 255.255.255.192', '!', 'interface Vlan3', ' ip address 10.10.10.129 255.255.255.192', '', 'ip dhcp excluded-address 10.10.10.193', '!', 'ip dhcp pool LAN', ' network 10.10.10.192 255.255.255.192', ' default-router 10.10.10.193', '!', 'interface Vlan4', ' ip address 10.10.10.193 255.255.255.192', '!', '', '!']} on 1 hosts
+2024-01-10 16:56:08,322 -  nornir.core -     INFO -        run() - Running task 'netmiko_send_config' with args {'config_commands': ['hostname R2', '!', '!', 'snmp-server community store-zabbix RO', '!', 'username cisco privilege 15 secret cisco', '!', 'interface Vlan1', ' ip address 10.10.10.1 255.255.255.192', '!', 'interface Vlan2', ' ip address 10.10.10.65 255.255.255.192', '!', 'interface Vlan3', ' ip address 10.10.10.129 255.255.255.192', '', 'ip dhcp excluded-address 10.10.10.193', '!', 'ip dhcp pool LAN', ' network 10.10.10.192 255.255.255.192', ' default-router 10.10.10.193', '!', 'interface Vlan4', ' ip address 10.10.10.193 255.255.255.192', '!', '', '!']} on 1 hosts
+2024-01-10 16:56:09,332 - nornir.core.task -    ERROR -      start() - Host 'console': task 'netmiko_send_config' failed with traceback:
 Traceback (most recent call last):
   File "/usr/local/lib/python3.10/site-packages/nornir/core/task.py", line 99, in start
     r = self.task(self, **self.params)
-  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/tasks/napalm_get.py", line 32, in napalm_get
-    device = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/tasks/netmiko_send_config.py", line 28, in netmiko_send_config
+    net_connect = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
   File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 494, in get_connection
     self.open_connection(
   File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 546, in open_connection
     conn_obj.open(
-  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/connections/__init__.py", line 57, in open
-    connection.open()
-  File "/usr/local/lib/python3.10/site-packages/napalm/ios/ios.py", line 170, in open
-    self.device = self._netmiko_open(
-  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 122, in _netmiko_open
-    raise ConnectionException("Cannot connect to {}".format(self.hostname))
-napalm.base.exceptions.ConnectionException: Cannot connect to 192.168.1.50
-
-2024-01-08 16:49:20,826 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-08 16:49:23,919 - nornir.core.task -    ERROR -      start() - Host 'R1': task 'napalm_get' failed with traceback:
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1104, in establish_connection
-    self.remote_conn_pre.connect(**ssh_connect_params)
-  File "/usr/local/lib/python3.10/site-packages/paramiko/client.py", line 388, in connect
-    raise NoValidConnectionsError(errors)
-paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 192.168.1.50
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 113, in _netmiko_open
-    self._netmiko_device = ConnectHandler(
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/connections/netmiko.py", line 59, in open
+    connection = ConnectHandler(**parameters)
   File "/usr/local/lib/python3.10/site-packages/netmiko/ssh_dispatcher.py", line 388, in ConnectHandler
     return ConnectionClass(*args, **kwargs)
   File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 462, in __init__
     self._open()
   File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 467, in _open
     self.establish_connection()
-  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1126, in establish_connection
-    raise NetmikoTimeoutException(msg)
-netmiko.exceptions.NetmikoTimeoutException: TCP connection to device failed.
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1092, in establish_connection
+    self.telnet_login()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/cisco_base_connection.py", line 111, in telnet_login
+    output = self.read_channel()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 96, in wrapper_decorator
+    return_val = func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 602, in read_channel
+    new_data = self.channel.read_channel()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/channel.py", line 126, in read_channel
+    return self.remote_conn.read_very_eager().decode(self.encoding, "ignore")
+  File "/usr/local/lib/python3.10/telnetlib.py", line 367, in read_very_eager
+    self.process_rawq()
+  File "/usr/local/lib/python3.10/telnetlib.py", line 481, in process_rawq
+    self.sock.sendall(IAC + WONT + opt)
+BrokenPipeError: [Errno 32] Broken pipe
 
-Common causes of this problem are:
-1. Incorrect hostname or IP address.
-2. Wrong TCP port.
-3. Intermediate firewall blocking access.
-
-Device settings: cisco_ios 192.168.1.50:22
-
-
-
-During handling of the above exception, another exception occurred:
-
+2024-01-10 16:57:28,476 -  nornir.core -     INFO -        run() - Running task 'netmiko_send_config' with args {'config_commands': ['hostname R2', '!', '!', 'snmp-server community store-zabbix RO', '!', 'username cisco privilege 15 secret cisco', '!', 'interface Vlan1', ' ip address 10.10.10.1 255.255.255.192', '!', 'interface Vlan2', ' ip address 10.10.10.65 255.255.255.192', '!', 'interface Vlan3', ' ip address 10.10.10.129 255.255.255.192', '', 'ip dhcp excluded-address 10.10.10.193', '!', 'ip dhcp pool LAN', ' network 10.10.10.192 255.255.255.192', ' default-router 10.10.10.193', '!', 'interface Vlan4', ' ip address 10.10.10.193 255.255.255.192', '!', '', '!']} on 1 hosts
+2024-01-10 16:57:29,481 - nornir.core.task -    ERROR -      start() - Host 'console': task 'netmiko_send_config' failed with traceback:
 Traceback (most recent call last):
   File "/usr/local/lib/python3.10/site-packages/nornir/core/task.py", line 99, in start
     r = self.task(self, **self.params)
-  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/tasks/napalm_get.py", line 32, in napalm_get
-    device = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/tasks/netmiko_send_config.py", line 28, in netmiko_send_config
+    net_connect = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
   File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 494, in get_connection
     self.open_connection(
   File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 546, in open_connection
     conn_obj.open(
-  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/connections/__init__.py", line 57, in open
-    connection.open()
-  File "/usr/local/lib/python3.10/site-packages/napalm/ios/ios.py", line 170, in open
-    self.device = self._netmiko_open(
-  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 122, in _netmiko_open
-    raise ConnectionException("Cannot connect to {}".format(self.hostname))
-napalm.base.exceptions.ConnectionException: Cannot connect to 192.168.1.50
-
-2024-01-08 16:49:55,115 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
-2024-01-08 16:49:58,172 - nornir.core.task -    ERROR -      start() - Host 'R1': task 'napalm_get' failed with traceback:
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1104, in establish_connection
-    self.remote_conn_pre.connect(**ssh_connect_params)
-  File "/usr/local/lib/python3.10/site-packages/paramiko/client.py", line 388, in connect
-    raise NoValidConnectionsError(errors)
-paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 192.168.1.50
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 113, in _netmiko_open
-    self._netmiko_device = ConnectHandler(
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/connections/netmiko.py", line 59, in open
+    connection = ConnectHandler(**parameters)
   File "/usr/local/lib/python3.10/site-packages/netmiko/ssh_dispatcher.py", line 388, in ConnectHandler
     return ConnectionClass(*args, **kwargs)
   File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 462, in __init__
     self._open()
   File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 467, in _open
     self.establish_connection()
-  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1126, in establish_connection
-    raise NetmikoTimeoutException(msg)
-netmiko.exceptions.NetmikoTimeoutException: TCP connection to device failed.
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1092, in establish_connection
+    self.telnet_login()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/cisco_base_connection.py", line 111, in telnet_login
+    output = self.read_channel()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 96, in wrapper_decorator
+    return_val = func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 602, in read_channel
+    new_data = self.channel.read_channel()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/channel.py", line 126, in read_channel
+    return self.remote_conn.read_very_eager().decode(self.encoding, "ignore")
+  File "/usr/local/lib/python3.10/telnetlib.py", line 367, in read_very_eager
+    self.process_rawq()
+  File "/usr/local/lib/python3.10/telnetlib.py", line 481, in process_rawq
+    self.sock.sendall(IAC + WONT + opt)
+BrokenPipeError: [Errno 32] Broken pipe
 
-Common causes of this problem are:
-1. Incorrect hostname or IP address.
-2. Wrong TCP port.
-3. Intermediate firewall blocking access.
-
-Device settings: cisco_ios 192.168.1.50:22
-
-
-
-During handling of the above exception, another exception occurred:
-
+2024-01-10 16:57:54,218 -  nornir.core -     INFO -        run() - Running task 'netmiko_send_config' with args {'config_commands': ['hostname R2', '!', '!', 'snmp-server community store-zabbix RO', '!', 'username cisco privilege 15 secret cisco', '!', 'interface Vlan1', ' ip address 10.10.10.1 255.255.255.192', '!', 'interface Vlan2', ' ip address 10.10.10.65 255.255.255.192', '!', 'interface Vlan3', ' ip address 10.10.10.129 255.255.255.192', '', 'ip dhcp excluded-address 10.10.10.193', '!', 'ip dhcp pool LAN', ' network 10.10.10.192 255.255.255.192', ' default-router 10.10.10.193', '!', 'interface Vlan4', ' ip address 10.10.10.193 255.255.255.192', '!', '', '!']} on 1 hosts
+2024-01-10 16:57:55,222 - nornir.core.task -    ERROR -      start() - Host 'console': task 'netmiko_send_config' failed with traceback:
 Traceback (most recent call last):
   File "/usr/local/lib/python3.10/site-packages/nornir/core/task.py", line 99, in start
     r = self.task(self, **self.params)
-  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/tasks/napalm_get.py", line 32, in napalm_get
-    device = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/tasks/netmiko_send_config.py", line 28, in netmiko_send_config
+    net_connect = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
   File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 494, in get_connection
     self.open_connection(
   File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 546, in open_connection
     conn_obj.open(
-  File "/usr/local/lib/python3.10/site-packages/nornir_napalm/plugins/connections/__init__.py", line 57, in open
-    connection.open()
-  File "/usr/local/lib/python3.10/site-packages/napalm/ios/ios.py", line 170, in open
-    self.device = self._netmiko_open(
-  File "/usr/local/lib/python3.10/site-packages/napalm/base/base.py", line 122, in _netmiko_open
-    raise ConnectionException("Cannot connect to {}".format(self.hostname))
-napalm.base.exceptions.ConnectionException: Cannot connect to 192.168.1.50
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/connections/netmiko.py", line 59, in open
+    connection = ConnectHandler(**parameters)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/ssh_dispatcher.py", line 388, in ConnectHandler
+    return ConnectionClass(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 462, in __init__
+    self._open()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 467, in _open
+    self.establish_connection()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1092, in establish_connection
+    self.telnet_login()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/cisco_base_connection.py", line 111, in telnet_login
+    output = self.read_channel()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 96, in wrapper_decorator
+    return_val = func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 602, in read_channel
+    new_data = self.channel.read_channel()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/channel.py", line 126, in read_channel
+    return self.remote_conn.read_very_eager().decode(self.encoding, "ignore")
+  File "/usr/local/lib/python3.10/telnetlib.py", line 367, in read_very_eager
+    self.process_rawq()
+  File "/usr/local/lib/python3.10/telnetlib.py", line 481, in process_rawq
+    self.sock.sendall(IAC + WONT + opt)
+BrokenPipeError: [Errno 32] Broken pipe
 
-2024-01-08 17:03:40,650 -  nornir.core -     INFO -        run() - Running task 'napalm_get' with args {'getters': ['facts']} on 1 hosts
+2024-01-10 16:58:06,563 -  nornir.core -     INFO -        run() - Running task 'netmiko_send_config' with args {'config_commands': ['hostname R2', '!', '!', 'snmp-server community store-zabbix RO', '!', 'username cisco privilege 15 secret cisco', '!', 'interface Vlan1', ' ip address 10.10.10.1 255.255.255.192', '!', 'interface Vlan2', ' ip address 10.10.10.65 255.255.255.192', '!', 'interface Vlan3', ' ip address 10.10.10.129 255.255.255.192', '', 'ip dhcp excluded-address 10.10.10.193', '!', 'ip dhcp pool LAN', ' network 10.10.10.192 255.255.255.192', ' default-router 10.10.10.193', '!', 'interface Vlan4', ' ip address 10.10.10.193 255.255.255.192', '!', '', '!']} on 1 hosts
+2024-01-10 16:58:07,567 - nornir.core.task -    ERROR -      start() - Host 'console': task 'netmiko_send_config' failed with traceback:
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/task.py", line 99, in start
+    r = self.task(self, **self.params)
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/tasks/netmiko_send_config.py", line 28, in netmiko_send_config
+    net_connect = task.host.get_connection(CONNECTION_NAME, task.nornir.config)
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 494, in get_connection
+    self.open_connection(
+  File "/usr/local/lib/python3.10/site-packages/nornir/core/inventory.py", line 546, in open_connection
+    conn_obj.open(
+  File "/usr/local/lib/python3.10/site-packages/nornir_netmiko/connections/netmiko.py", line 59, in open
+    connection = ConnectHandler(**parameters)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/ssh_dispatcher.py", line 388, in ConnectHandler
+    return ConnectionClass(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 462, in __init__
+    self._open()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 467, in _open
+    self.establish_connection()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 1092, in establish_connection
+    self.telnet_login()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/cisco_base_connection.py", line 111, in telnet_login
+    output = self.read_channel()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 96, in wrapper_decorator
+    return_val = func(self, *args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/netmiko/base_connection.py", line 602, in read_channel
+    new_data = self.channel.read_channel()
+  File "/usr/local/lib/python3.10/site-packages/netmiko/channel.py", line 126, in read_channel
+    return self.remote_conn.read_very_eager().decode(self.encoding, "ignore")
+  File "/usr/local/lib/python3.10/telnetlib.py", line 367, in read_very_eager
+    self.process_rawq()
+  File "/usr/local/lib/python3.10/telnetlib.py", line 481, in process_rawq
+    self.sock.sendall(IAC + WONT + opt)
+BrokenPipeError: [Errno 32] Broken pipe
+
+2024-01-10 16:58:37,950 -  nornir.core -     INFO -        run() - Running task 'netmiko_send_config' with args {'config_commands': ['hostname R1', '!', '!', 'snmp-server community store-zabbix RO', '!', 'username cisco privilege 15 secret cisco', '!', 'interface Vlan1', ' ip address 10.10.10.1 255.255.255.192', '!', 'interface Vlan2', ' ip address 10.10.10.65 255.255.255.192', '!', 'interface Vlan3', ' ip address 10.10.10.129 255.255.255.192', '', 'ip dhcp excluded-address 10.10.10.193', '!', 'ip dhcp pool LAN', ' network 10.10.10.192 255.255.255.192', ' default-router 10.10.10.193', '!', 'interface Vlan4', ' ip address 10.10.10.193 255.255.255.192', '!', '', '!']} on 1 hosts

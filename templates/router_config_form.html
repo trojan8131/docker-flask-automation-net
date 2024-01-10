@@ -5,28 +5,36 @@
         <h2>Formularz urządzenia</h2>
         <form method="post">
             {{ form.csrf_token }}
-            <div class="mb-3">
-                {{ form.device_name.label }}
-                <br>
-                {{ form.device_name(size=20) }}
+ 
+            <div class="form-group mb-3">
+                {{ form.device_name.label(class="form-label") }}
+                {{ form.device_name(class="form-select", size=10) }}
             </div>
-            <div class="mb-3">
-                {{ form.subnet.label }}
-                <br>
-                {{ form.subnet(size=20) }}
-            </div>
-            <div class="mb-3">
-                {{ form.snmp_community.label }}
-                <br>
-                {{ form.snmp_community(size=20) }}
 
-            </div>
-            <div class="mb-3">
-                {{ form.vlan_dhcp.label }}
-                <br>
-                {{ form.vlan_dhcp(size=20) }}
 
+            <div class="form-group mb-3">
+                {{ form.subnet.label(class="form-label") }}
+                {{ form.subnet(class="form-control", size=10) }}
             </div>
+
+
+            <div class="form-group mb-3">
+                {{ form.snmp_community.label(class="form-label") }}
+                {{ form.snmp_community() }}
+            </div>
+
+
+            <div class="form-group mb-3">
+                {{ form.vlan_dhcp.label(class="form-label") }}
+                {{ form.vlan_dhcp(class="form-check-input", size=10) }}
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form.send_config.label(class="form-label") }}
+                {{ form.send_config(class="form-check-input", size=10) }}
+            </div>
+
+
             <button type="submit" class="btn btn-primary">Wyślij</button>
         </form>
     </div>

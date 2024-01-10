@@ -13,7 +13,6 @@ interface Vlan2
 !
 interface Vlan3
  ip address {{ subnet }}.129 255.255.255.192
-
 {% if vlan_dhcp %}
 ip dhcp excluded-address {{ subnet }}.193
 !
@@ -26,8 +25,3 @@ interface Vlan4
 !
 {% endif %}
 !
-
-
-
-
-

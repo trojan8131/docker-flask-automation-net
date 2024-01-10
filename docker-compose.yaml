@@ -6,13 +6,15 @@ services:
     volumes:
       - /opt/docker-flask-automation-net:/docker-flask/app/
     ports:
-      - "0.0.0.0:80:5000"
+      - "0.0.0.0:8001:5000"
     dns: 
       - 172.19.0.1
     restart: always
     networks:
       network-flask:
         ipv4_address: 172.19.0.5
+    devices:
+      - "/dev/ttyUSB0:/dev/COM1"
 
 networks:
   network-flask:
