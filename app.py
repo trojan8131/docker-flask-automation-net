@@ -20,12 +20,13 @@ from nornir_rich.functions import print_result
 
 from pymongo import *
 
+import ipaddress
+
+
 ############ Flask Config ##########
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
-
-
 
 ########### MongoDB #############
 
@@ -53,7 +54,7 @@ mongo_database= autonet_db.routery_stacje_benzynowe
 
 routes={"Odcinek 13/14":[["/inventory_nornir","Nornir Inventory","Urządzenia z hosts.yaml","success"]],
         "Odcinek 15/16":[["/router_config_form","Formularz konfiguracji","Formularz konfiguracji routera","success"]],
-        "Odcinek 17":[["/petrol_station_database","Baza stacji beznzynowych","Baza w MongoDB","success"]]
+        "Odcinek 17/18":[["/petrol_station_database","Baza stacji beznzynowych","Baza w MongoDB","success"]]
 }
 
 
@@ -70,6 +71,9 @@ class DeviceForm(FlaskForm):
     send_config = BooleanField("Czy wysłać konfigurację do podłączonego urządzenia")
 
 
+class StationForm(FlaskForm):
+    location= StringField("Lokalizacja Stacji")
+    public_ip= StringField(" Publiczny IP łącza WAN")
 
 
 
@@ -143,6 +147,49 @@ def router_config_form():
 def petrol_station_database():
     stations=list(mongo_database.find().sort("number"))
     return render_template('petrol_station_database.html',stations=stations)
+
+@app.route('/petrol_station_database/add', methods=['POST',"GET"])
+def petrol_station_database_add():
+    form = StationForm()
+
+    if form.validate_on_submit():
+        ######## Wygenerowanie numeru sklepu #############
+        used_numbers=[x["number"] for x in list(mongo_database.find())]
+        number=None
+        for number in range(1000,10000):
+            if number not in used_numbers:
+                break
+        
+        ######### Wygenerowanie wolnej adresacji IP ########
+        
+        core_subnet = ipaddress.IPv4Network("172.16.0.0/14")
+        subnets_in_core_subnet=[str(x) for x in list(core_subnet.subnets(new_prefix=24))]
+        used_subnets=[x["subnet"] for x in list(mongo_database.find())]
+        subnet=None
+        for subnet in subnets_in_core_subnet:
+            if subnet not in used_subnets:
+                break
+        
+        petrol_station={
+            "number": number,
+            "location": form.location.data,
+            "subnet"  :subnet,
+            "public_ip" :form.public_ip.data,
+        }
+
+        try:
+            mongo_database.insert_one(petrol_station)
+            return redirect(url_for("petrol_station_database"))
+        except Exception as error: 
+            return render_template('petrol_station_database_add.html',form=form,error=error)
+
+
+    return render_template('petrol_station_database_add.html',form=form)
+
+@app.route('/petrol_station_database/delete/<int:number>', methods=['POST',"GET"])
+def petrol_station_database_delete(number):
+    mongo_database.find_one_and_delete({"number":number})
+    return redirect(url_for("petrol_station_database"))
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000, host="0.0.0.0")

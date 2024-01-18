@@ -2,6 +2,14 @@
 {% block content %}
 <br>
 <div class="bg-light p-3 rounded code-block border border-primary">
+    <div class="btn-group  d-flex">
+        <a href="{{url_for('petrol_station_database_add')}}" class="btn btn-primary me-1"aria-current="page">Dodaj lokalizację</a>
+        <a href="#" class="btn btn-primary me-1">Wolny Przycisk</a>
+        <a href="#" class="btn btn-primary me-1" >Wolny Przycisk</a>
+    </div>
+</div>
+<br>
+<div class="bg-light p-3 rounded code-block border border-primary">
 
     <table class="table table-striped table-bordered">
         <thead>
@@ -19,7 +27,7 @@
                 <td>{{petrol_station["location"]}}</td>
                 <td>{{petrol_station["subnet"]}}</td>
                 <td>{{petrol_station["public_ip"]}}</td>
-                <td> <a href="#" class="btn btn-outline-danger"> Usuń </a> </td>
+                <td> <a href="{{url_for('petrol_station_database_delete',number=petrol_station['number'])}}" class="btn btn-outline-danger"> Usuń </a> </td>
 
             </tr>
             {% endfor %}
