@@ -1,27 +1,50 @@
 hostname {{ device_name }}
 !
 !
+aaa new-model
+!
+crypto key generate rsa
+line vty 0 4
+ transport input telnet ssh
+ exit
+!
+!
 snmp-server community {{ snmp_community }} RO
+snmp-server location {{ location }}
+!
 !
 username cisco privilege 15 secret cisco
 !
-interface Vlan1
+vlan 100
+name POS
+interface Vlan100
  ip address {{ subnet }}.1 255.255.255.192
 !
-interface Vlan2
+vlan 110
+name EFT_Terminals
+interface Vlan110
  ip address {{ subnet }}.65 255.255.255.192
 !
-interface Vlan3
+vlan 120
+name Back_Office
+interface Vlan120
  ip address {{ subnet }}.129 255.255.255.192
+
+
 {% if vlan_dhcp %}
+vlan 130
+name Guests
 ip dhcp excluded-address {{ subnet }}.193
 !
 ip dhcp pool LAN
  network {{ subnet }}.192 255.255.255.192
  default-router {{ subnet }}.193
 !
-interface Vlan4
+interface Vlan130
  ip address {{ subnet }}.193 255.255.255.192
 !
 {% endif %}
+!
+do wr
+!
 !
