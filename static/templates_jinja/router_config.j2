@@ -1,11 +1,16 @@
-hostname {{ device_name }}
+hostname {{ hostname }}
 !
 !
 aaa new-model
+aaa authentication login default local
+aaa authorization exec default local
+
 !
-crypto key generate rsa
+ip domain name AUTONET.LAB
+ip ssh  version 2
 line vty 0 4
  transport input telnet ssh
+ privilege level 15
  exit
 !
 !
@@ -18,33 +23,63 @@ username cisco privilege 15 secret cisco
 vlan 100
 name POS
 interface Vlan100
- ip address {{ subnet }}.1 255.255.255.192
+no shutdown
+ip nat inside
+ ip address {{ prefix }}.1 255.255.255.192
+ no autostate
 !
 vlan 110
 name EFT_Terminals
 interface Vlan110
- ip address {{ subnet }}.65 255.255.255.192
+no shutdown
+ip nat inside
+ ip address {{ prefix }}.65 255.255.255.192
+  no autostate
 !
 vlan 120
 name Back_Office
 interface Vlan120
- ip address {{ subnet }}.129 255.255.255.192
+no shutdown
+ip nat inside
+ ip address {{ prefix }}.129 255.255.255.192
+  no autostate
 
 
 {% if vlan_dhcp %}
 vlan 130
 name Guests
-ip dhcp excluded-address {{ subnet }}.193
+ip dhcp excluded-address {{ prefix }}.193
 !
 ip dhcp pool LAN
- network {{ subnet }}.192 255.255.255.192
- default-router {{ subnet }}.193
+ network {{ prefix }}.192 255.255.255.224
+ default-router {{ prefix }}.193
 !
 interface Vlan130
- ip address {{ subnet }}.193 255.255.255.192
+no shutdown
+ip nat inside
+ ip address {{ prefix }}.193 255.255.255.224
+  no autostate
 !
 {% endif %}
 !
+interface Loopback1
+no shutdown
+ip address {{ prefix }}.255 255.255.255.255
+!
+ip access-list extended ACL-NAT
+ permit ip {{ prefix }}.0 0.0.0.255 any
+
+interface {{wan_interface}}
+description __ISP {{public_ip}} __
+no shutdown
+ip nat outside
+
+interface {{lan_interface}}
+description  SWITCH 
+switchport mode trunk
+no shutdown
+
+ip nat inside source list ACL-NAT interface {{wan_interface}} overload
 do wr
 !
 !

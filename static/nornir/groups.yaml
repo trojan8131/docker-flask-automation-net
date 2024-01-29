@@ -1,4 +1,8 @@
-router:
+SB-ROUTER:
+    password: cisco    
+    username: cisco
+    platform: ios
+DC-ROUTER:
     password: cisco    
     username: cisco
     platform: ios

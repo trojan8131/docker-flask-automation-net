@@ -15,8 +15,11 @@
                 <td>{{device_name}}</td>
                 <td>{{items["hostname"]}}</td>
                 <td>{{items["groups"]}}</td>
-                <td> <a href="{{url_for('nornir_facts',device=device_name)}}" class="btn btn-primary"> Facts </a> </td>
-
+                <td> <a href="{{url_for('nornir_facts',device=device_name)}}" class="btn btn-primary"> Facts </a> 
+                    {% if "number" in items["data"]%}
+                 <a href="{{url_for('router_config_form_startup',number=items['data']['number'])}}" class="btn btn-outline-danger"> Konfiguracja </a> 
+                    {%endif%}
+                </td>
                 </tr>
             {% endfor %}
         </thead>
