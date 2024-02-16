@@ -162,7 +162,7 @@ def petrol_station_database_add():
                             f"SB-R-{number}": {
                                 "hostname": f"{'.'.join(subnet.split('.')[:3])}.255",
                                 "groups": [
-                                "router"
+                                "SB-ROUTER"
                                 ],
                                 "data":{
                                     "location": form.location.data,
@@ -251,8 +251,8 @@ def router_config_form_startup(number):
     return render_template('router_config_form_startup.html',form=form)
 
 
-@app.route('/test_api', methods=['POST',"GET"])
-def test_api():
+@app.route('/oxidized', methods=['POST',"GET"])
+def oxidized():
     with open('static/nornir/hosts.yaml', 'r') as file:
         nornir_inventory = yaml.safe_load(file)
     router_db=[]

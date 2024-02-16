@@ -1,0 +1,219 @@
+
+SB-R-1001#sh run
+Building configuration...
+
+
+Current configuration : 3754 bytes
+!
+version 15.7
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname SB-R-1001
+!
+boot-start-marker
+boot system flash:c880data-universalk9-mz.157-3.M9.bin
+boot-end-marker
+!
+!
+logging buffered 51200 warnings
+!
+aaa new-model
+!
+!
+aaa authentication login default local
+aaa authorization exec default local
+aaa authorization network FLEXVPN_LOCAL local
+!
+!
+!
+!
+!
+aaa session-id common
+memory-size iomem 10
+!
+crypto pki trustpoint TP-self-signed-1943839560
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1943839560
+ revocation-check none
+ rsakeypair TP-self-signed-1943839560
+!
+!
+crypto pki certificate chain TP-self-signed-1943839560
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+ip dhcp excluded-address 172.16.1.193
+!
+ip dhcp pool LAN
+ network 172.16.1.192 255.255.255.224
+ default-router 172.16.1.193
+!
+!
+!
+no ip domain lookup
+ip domain name AUTONET.LAB
+ip cef
+no ipv6 cef
+!
+!
+multilink bundle-name authenticated
+license udi pid CISCO881-SEC-K9 sn FCZ1715C05P
+!
+!
+username cisco privilege 15 secret 5 $1$1B/V$njywcRGf34TqW6NutSmjU.
+!
+crypto ikev2 authorization policy IKEV2_AUTHORIZATION
+ route set interface
+ route set remote ipv4 172.16.1.0 255.255.255.0
+!
+crypto ikev2 proposal IKEV2_PROPO
+ encryption aes-gcm-256
+ prf sha256
+ group 16
+!
+crypto ikev2 policy IKEv2_POLICY
+ match address local 156.0.0.1
+ proposal IKEV2_PROPO
+!
+crypto ikev2 keyring IKEV2_KEYRING
+ peer SPOKE_ROUTERS
+  address 0.0.0.0 0.0.0.0
+  pre-shared-key key PoteznyTunel123
+ !
+!
+!
+crypto ikev2 profile IKEV2_PROFILE
+ match identity remote fqdn HUB.FLEXVPN.LAB
+ match identity remote fqdn domain FLEXVPN.LAB
+ identity local fqdn R1.FLEXVPN.LAB
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local IKEV2_KEYRING
+ aaa authorization group psk list FLEXVPN_LOCAL IKEV2_AUTHORIZATION
+!
+!
+no cdp run
+!
+!
+!
+!
+crypto ipsec transform-set CTS-AES-SHA esp-aes 256 esp-sha256-hmac
+ mode tunnel
+!
+crypto ipsec profile IPSEC_PROFILE
+ set security-association lifetime seconds 3200
+ set transform-set CTS-AES-SHA
+ set pfs group16
+ set ikev2-profile IKEV2_PROFILE
+!
+!
+!
+!
+!
+!
+!
+interface Loopback1
+ ip address 172.16.1.255 255.255.255.255
+!
+interface Tunnel0
+ ip address negotiated
+ tunnel source 156.0.0.1
+ tunnel mode ipsec ipv4
+ tunnel destination 13.0.0.1
+ tunnel protection ipsec profile IPSEC_PROFILE ikev2-profile IKEV2_PROFILE
+!
+interface FastEthernet0
+ description SWITCH
+ switchport mode trunk
+ no ip address
+!
+interface FastEthernet1
+ no ip address
+!
+interface FastEthernet2
+ no ip address
+!
+interface FastEthernet3
+ no ip address
+!
+interface FastEthernet4
+ description __ISP 156.0.0.1 __
+ ip address 156.0.0.1 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan100
+ ip address 172.16.1.1 255.255.255.192
+ ip nat inside
+ ip virtual-reassembly in
+ no autostate
+!
+interface Vlan110
+ ip address 172.16.1.65 255.255.255.192
+ ip nat inside
+ ip virtual-reassembly in
+ no autostate
+!
+interface Vlan120
+ ip address 172.16.1.129 255.255.255.192
+ ip nat inside
+ ip virtual-reassembly in
+ no autostate
+!
+ip forward-protocol nd
+ip http server
+ip http access-class 23
+ip http authentication local
+ip http secure-server
+ip http timeout-policy idle 60 life 86400 requests 10000
+!
+!
+ip nat inside source list ACL-NAT interface FastEthernet4 overload
+ip route 0.0.0.0 0.0.0.0 156.0.0.2
+ip ssh version 2
+!
+ip access-list extended ACL-NAT
+ permit ip 172.16.1.0 0.0.0.255 any
+!
+ipv6 ioam timestamp
+!
+snmp-server community public RO
+snmp-server location Bydgoszcz, Fordon
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ no modem enable
+line aux 0
+line vty 0 4
+ privilege level 15
+ transport input telnet ssh
+!
+!
+end

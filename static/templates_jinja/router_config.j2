@@ -4,6 +4,7 @@ hostname {{ hostname }}
 aaa new-model
 aaa authentication login default local
 aaa authorization exec default local
+aaa authorization network FLEXVPN_LOCAL local 
 
 !
 ip domain name AUTONET.LAB
@@ -14,11 +15,15 @@ line vty 0 4
  exit
 !
 !
+!
+username cisco privilege 15 secret cisco
+!
+!
+!
 snmp-server community public RO
 snmp-server location {{ location }}
 !
 !
-username cisco privilege 15 secret cisco
 !
 vlan 100
 name POS
@@ -80,6 +85,57 @@ switchport mode trunk
 no shutdown
 
 ip nat inside source list ACL-NAT interface {{wan_interface}} overload
+
+
+
+crypto ikev2 authorization policy IKEV2_AUTHORIZATION 
+ route set interface
+ route set remote ipv4 {{prefix}}.0 255.255.255.0
+!
+crypto ikev2 proposal IKEV2_PROPO 
+ encryption aes-gcm-256
+ prf sha256
+ group 16
+!
+crypto ikev2 policy IKEv2_POLICY 
+ match address local {{public_ip}}
+ proposal IKEV2_PROPO
+!
+crypto ikev2 keyring IKEV2_KEYRING
+ peer DC-R1
+  address 13.0.0.1 255.255.255.255
+  pre-shared-key key PoteznyTunel123
+ !
+!
+!
+crypto ikev2 profile IKEV2_PROFILE
+ match identity remote fqdn HUB.FLEXVPN.LAB
+ identity local fqdn {{hostname}}.FLEXVPN.LAB
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local IKEV2_KEYRING
+ aaa authorization group psk list FLEXVPN_LOCAL IKEV2_AUTHORIZATION
+!
+!
+
+!
+crypto ipsec transform-set CTS-AES-SHA esp-aes 256 esp-sha256-hmac 
+ mode tunnel
+!
+crypto ipsec profile IPSEC_PROFILE
+ set security-association lifetime seconds 3200
+ set transform-set CTS-AES-SHA 
+ set pfs group16
+ set ikev2-profile IKEV2_PROFILE
+!
+interface Tunnel0
+ ip address negotiated
+ tunnel source {{public_ip}}
+ tunnel mode ipsec ipv4
+ tunnel destination 13.0.0.1
+ tunnel protection ipsec profile IPSEC_PROFILE ikev2-profile IKEV2_PROFILE
+
+
 do wr
 !
 !
