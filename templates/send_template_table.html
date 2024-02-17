@@ -1,0 +1,58 @@
+
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-light p-3 rounded code-block border border-primary">
+    <div class="container mt-3">
+        <h2>Podsumowanie przesłania komend</h2>
+
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Nazwa urządzenia</th>
+                    <th>Status</th>
+                    <th>Wynik</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hostname,values in output_table.items() %}
+                <tr>
+                    <td>{{ hostname }}</td>
+                    <td>{{ values["status"] }}</td>
+                    <td><!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#backdrop{{hostname}}">
+                            Wynik
+                        </button>
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="backdrop{{hostname}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">{{hostname}}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-dialog modal-dialog-scrollable p-3">
+                                        {{values["output"]|safe}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+</div>
+
+
+{% endblock content %}
+

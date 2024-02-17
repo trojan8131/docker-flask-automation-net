@@ -10,13 +10,15 @@ from nornir_inspect import nornir_inspect
 
 from flask_wtf import FlaskForm
 from wtforms import (StringField, TextAreaField, IntegerField, BooleanField,
-                     RadioField,SubmitField)
+                     RadioField,SubmitField,SelectMultipleField)
 from wtforms.validators import InputRequired, Length
 from jinja2 import Template
 
 from nornir_netmiko.tasks import netmiko_send_config
 from nornir.core.inventory import Host,Group
 from nornir_rich.functions import print_result
+
+from nornir.core.filter import F
 
 from pymongo import *
 
@@ -39,7 +41,10 @@ mongo_database= autonet_db.routery_stacje_benzynowe
 
 
 routes={" ":[["/inventory_nornir","Nornir Inventory","Urządzenia z hosts.yaml","success"],
-["/petrol_station_database","Baza stacji beznzynowych","Baza w MongoDB","success"]]
+["/petrol_station_database","Baza stacji beznzynowych","Baza w MongoDB","success"],
+["/send_template","Wyślij komendy","","success"],
+["/test","test","","success"]
+]
 }
 
 
@@ -67,11 +72,27 @@ class RouterStartupConfig(FlaskForm):
     lan_interface= StringField("Interfejs LAN")
     wan_interface= StringField("Interfejs WAN")
     vlan_dhcp = BooleanField('Vlan DHCP')
+
+class SendCommands(FlaskForm):
+    hosts=TextAreaField("Filtrowanie po Hostach")
+    groups=SelectMultipleField("Filtrowanie po Grupach",choices=InitNornir(config_file="static/nornir/config.yaml").inventory.groups.values())
+    commands=TextAreaField("Komendy do przesłania")
+
+
+
 ############# Code ############
 
 
 def clear(host):
     return False
+
+def filter_hosts(host,hosts):
+    if host.name in hosts:
+        return True
+    else:
+        return False
+
+
 
 def get_3_octets(subnet):
     return '.'.join(subnet.replace("/24","").split('.')[:3])
@@ -92,6 +113,9 @@ def get_3_octets(subnet):
 def homepage():
     return render_template("base_site.html",routes=routes)
 
+@app.route("/test")
+def test():
+    return render_template("test.html",routes=routes)
 
 
 # * Inventory Nornir
@@ -236,7 +260,7 @@ def router_config_form_startup(number):
             password=form.password.data
         )
         nr.inventory.hosts["router"]=router
-        result=nr.run(netmiko_send_config,config_commands=template.splitlines())
+        result=nr.run(netmiko_send_config,config_commands=template.splitlines(),read_timeout=120,cmd_verify= False)
         print(nornir_inspect(result))
         if result["router"][0].failed:
             error="Problem z podłączeniem do urządzenia"
@@ -251,6 +275,9 @@ def router_config_form_startup(number):
     return render_template('router_config_form_startup.html',form=form)
 
 
+############################################
+
+
 @app.route('/oxidized', methods=['POST',"GET"])
 def oxidized():
     with open('static/nornir/hosts.yaml', 'r') as file:
@@ -261,8 +288,55 @@ def oxidized():
     return router_db
 
 
+############################################
+
+@app.route('/send_template', methods=['POST',"GET"])
+def send_template():
+
+    def send_commands(task,commands):
+        try:
+            result=task.run(task=netmiko_send_config,config_commands=commands,read_timeout=120,cmd_verify= False)
+            task.host["output"]=str(result.result).replace("\n","<br>")
+            task.host["status"]="Przesłane"
+        except Exception as e:
+            task.host["output"]="Wystąpił Błąd"
+            task.host["status"]="Wystąpił Błąd"            
 
 
+    form=SendCommands()
+
+    if form.is_submitted():
+        hosts=form.hosts.data
+        groups=form.groups.data
+        commands=form.commands.data
+        print(hosts)
+        print(groups)
+        # ! Filtrowanie inventory
+        nr= InitNornir("static/nornir/config.yaml")
+        if hosts:
+            nr=nr.filter(filter_hosts,hosts=hosts.splitlines())
+        if groups:
+            nr=nr.filter(F(groups__any=groups))
+        
+        # ! Przesłanie komend
+        print(nr.inventory.hosts)
+        nr.run(task=send_commands,commands=commands.splitlines())
+        nr.close_connections()
+
+        # ! Pobranie wyniku
+        output_table={}
+
+
+        
+        
+        for host_name, values in nr.inventory.hosts.items():
+            output_table[host_name]={"status":values["status"],"output":values["output"]}
+        
+        return render_template('send_template_table.html',output_table=output_table)
+
+
+
+    return render_template('send_template.html',form=form)
 
 
 
