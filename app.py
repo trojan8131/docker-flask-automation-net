@@ -7,7 +7,7 @@ import yaml
 from nornir import InitNornir
 from nornir_napalm.plugins.tasks import napalm_get
 from nornir_inspect import nornir_inspect
-
+from pyzabbix import ZabbixAPI,ZabbixAPIException
 from flask_wtf import FlaskForm
 from wtforms import (StringField, TextAreaField, IntegerField, BooleanField,
                      RadioField,SubmitField,SelectMultipleField)
@@ -200,10 +200,35 @@ def petrol_station_database_add():
                 yaml.dump(new_router, inventory_file, default_flow_style=False)
                 
                 
-            return redirect(url_for("petrol_station_database"))
+            
         except Exception as error: 
             return render_template('petrol_station_database_add.html',form=form,error=error)
+        
+        # ! Dodanie urządzenia do Zabbixa
+    
+        zapi = ZabbixAPI("http://192.168.1.80")
+        zapi.login("Admin", "zabbix")
 
+        print("Connected to Zabbix API Version %s" % zapi.api_version())
+
+        try:
+            zapi.host.create(
+            host=f"SB-R-{number}",
+            interfaces={"type": 2,"main": 1,"useip": 1,"ip": get_3_octets(subnet)+".255","dns": "","port": "161","details":{"version":2,"bulk":1,"community":"{$SNMP_COMMUNITY}"},},
+            groups={"groupid": "22",},
+            templates={"templateid":"10218"},
+            inventory_mode=0
+            )
+        except ZabbixAPIException as e:
+            return render_template('petrol_station_database_add.html',form=form,error=e)
+        
+        
+        
+        
+        
+        
+        
+        return redirect(url_for("petrol_station_database"))
 
     return render_template('petrol_station_database_add.html',form=form)
 
@@ -223,6 +248,14 @@ def petrol_station_database_delete(number):
         
     with open('static/nornir/hosts.yaml', 'w') as file:
         yaml.dump(nornir_inventory, file, default_flow_style=False)
+    
+    zapi = ZabbixAPI("http://192.168.1.80")
+    zapi.login("Admin", "zabbix")
+
+    print("Connected to Zabbix API Version %s" % zapi.api_version())
+
+    host= zapi.host.get(output=['hostids', 'host'],filter={"host":[f'SB-R-{number}']})
+    zapi.host.delete(int(host[0]["hostid"]))
     return redirect(url_for("petrol_station_database"))
 
 

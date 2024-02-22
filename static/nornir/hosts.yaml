@@ -12,7 +12,7 @@ ISP-R1:
   hostname: 13.0.0.2
 SB-R-1000:
   data:
-    location: Poznan, Rataje
+    location: "Gda\u0144sk"
     number: 1000
     subnet: 172.16.0.0/24
   groups:
@@ -20,7 +20,7 @@ SB-R-1000:
   hostname: 172.16.0.255
 SB-R-1001:
   data:
-    location: Bydgoszcz, Fordon
+    location: "Wroc\u0142aw"
     number: 1001
     subnet: 172.16.1.0/24
   groups:
@@ -28,17 +28,9 @@ SB-R-1001:
   hostname: 172.16.1.255
 SB-R-1002:
   data:
-    location: Bukowiec
+    location: Warszawa
     number: 1002
     subnet: 172.16.2.0/24
   groups:
   - SB-ROUTER
   hostname: 172.16.2.255
-SB-R-1003:
-  data:
-    location: "Gda\u0144sk 12"
-    number: 1003
-    subnet: 172.16.3.0/24
-  groups:
-  - SB-ROUTER
-  hostname: 172.16.3.255
