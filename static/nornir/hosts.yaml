@@ -28,9 +28,17 @@ SB-R-1001:
   hostname: 172.16.1.255
 SB-R-1002:
   data:
-    location: Warszawa
+    location: "Toru\u0144"
     number: 1002
     subnet: 172.16.2.0/24
   groups:
   - SB-ROUTER
   hostname: 172.16.2.255
+SB-R-1003:
+  data:
+    location: "\u021Aig\u0103ne\u0219ti"
+    number: 1003
+    subnet: 172.16.3.0/24
+  groups:
+  - SB-ROUTER
+  hostname: 172.16.3.255

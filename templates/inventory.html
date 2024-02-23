@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-light p-3 rounded code-block border border-primary">
+    <div class="container mt-3">
+        <h2>Devices Inventory</h2>
+        <form action="/download_inventory" method="get">
+            <button type="submit">
+                <img src="static/files/excel.png" alt="Excel Icon" style="width: 20px; height: 20px;">
+            </button>
+        </form>
+        <br>
+
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Hostname</th>
+                    <th>Status</th>
+                    <th>Uptime</th>
+                    <th>Vendor</th>
+                    <th>Model</th>
+                    <th>Serial_number</th>
+                    <th>Version</th>
+                    <th>Location</th>
+                    <th>IPs</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hostname,values in data_table.items() %}
+                <tr>
+                    <td>{{ hostname }}</td>
+                    <td>{{ values["Status"]}}</td>
+                    <td>{{ values["Uptime"] }}</td>
+                    <td>{{ values["Vendor"] }}</td>
+                    <td>{{ values["Model"] }}</td>
+                    <td>{{ values["Serial_number"] }}</td>
+                    <td>{{ values["Version"] }}</td>
+                    <td>{{ values["Location"] }}</td>
+                    <td>{{ values["IPs"] }}</td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+</div>
+
+
+{% endblock content %}

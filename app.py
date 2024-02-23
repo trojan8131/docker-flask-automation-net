@@ -19,16 +19,26 @@ from nornir.core.inventory import Host,Group
 from nornir_rich.functions import print_result
 
 from nornir.core.filter import F
-
+import pandas as pd
+from unidecode import unidecode
 from pymongo import *
-
+import re
 import ipaddress
 
 
+import logging
+
 ############ Flask Config ##########
+logger = logging.getLogger("flask")
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
+app.app_context().push()
+
+try:
+    print("RESTART")
+except Exception as e:
+    print(e)
 
 ########### MongoDB #############
 
@@ -42,8 +52,9 @@ mongo_database= autonet_db.routery_stacje_benzynowe
 
 routes={" ":[["/inventory_nornir","Nornir Inventory","Urządzenia z hosts.yaml","success"],
 ["/petrol_station_database","Baza stacji beznzynowych","Baza w MongoDB","success"],
-["/send_template","Wyślij komendy","","success"],
-["/test","test","","success"]
+["/send_template","Wyślij komendy","Wyślij komendy na urządzenia","success"],
+["/inventory","Inventura urządzeń","Stwórz tabelę z inventurą urządzeń","success"]
+,
 ]
 }
 
@@ -171,7 +182,7 @@ def petrol_station_database_add():
         
         petrol_station={
             "number": number,
-            "location": form.location.data,
+            "location": unidecode(form.location.data),
             "subnet"  :subnet,
          #   "public_ip" :form.public_ip.data,
         }
@@ -371,8 +382,61 @@ def send_template():
 
     return render_template('send_template.html',form=form)
 
+####################################
+@app.route('/inventory', methods=['POST',"GET"])
+def inventory():
+    def inventory_nornir_task(task):
+        try:
+            details=task.run(task=napalm_get,getters=["get_interfaces_ip","get_facts","get_snmp_information"])
+        except:
+            task.host["data"]={"Status":"Problem pobraniem danych","Hostname":task.host.name}
+
+        facts=details.result["get_facts"]
+        version=facts["os_version"]    
+        regex=r"(Version\s\d+\.\d+)"
+        matches=re.search(regex,version)
+        if matches:
+            version=matches.group(1)
+        ip_prefix_list=[]
+        for interface,data in details.result["get_interfaces_ip"].items():
+            try:
+                for address,prefix in data["ipv4"].items():
+                    ip_prefix_list.append(f"{interface}: {address}/{prefix['prefix_length']}")
+            except:
+                pass
+        ip_prefix_string=" , ".join(ip_prefix_list)
+        task.host["data"]={"Hostname":facts["hostname"],
+                            "Uptime": facts["uptime"],
+                            "Model":facts["model"],
+                            "Vendor":facts["vendor"],
+                            "Serial_number":facts["serial_number"],
+                            "Version":version,
+                            "Location":details.result["get_snmp_information"]["location"],
+                            "IPs":ip_prefix_string,
+                            "Status":"Dane pobrane prawidłowo"  }
+
+    # ! Nornir 
+
+    nr = InitNornir("static/nornir/config.yaml")
+    nr.run(task=inventory_nornir_task)
+    nr.close_connections()
+
+    # ! Pobranie wyników
+    data_table={}
+    for host_name,values in nr.inventory.hosts.items():
+        data_table[host_name]=values["data"]
+    dataframe=pd.DataFrame([x for x in data_table.values()])
+    filepath="static/files/inwentura.xlsx"
+    dataframe.to_excel(filepath,index=True)
 
 
+    return render_template('inventory.html',data_table=data_table)
+
+
+@app.route('/download_inventory', methods=['POST',"GET"])
+def download_inventory():
+    filepath = 'static/files/inwentura.xlsx'
+    return send_file(filepath, as_attachment=True)
 
 # * Start serwisu
 if __name__ == "__main__":
