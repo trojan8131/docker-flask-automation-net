@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-light p-3 rounded code-block border border-primary">
+    <div class="container mt-5">
+        <h2>Upgrade Routera</h2>
+        <form id="upgrade_os" method="post">
+            {{ form.csrf_token }}
+ 
+            <div class="form-group mb-3">
+                {{ form.host.label(class="form-label") }}
+                {{ form.host(class="form-select") }}
+            </div>
+ 
+            <div class="form-group mb-3">
+                {{ form.image.label(class="form-label") }}
+                {{ form.image(class="form-select") }}
+            </div>
+
+
+            <button type="submit" id="myButton" class="btn btn-primary">Wyślij</button>
+        </form>
+    </div>
+    <br>
+</div>
+<div class="bg-light p-3 rounded code-block border border-primary">
+    <h1 class="mb-4">Progres:</h1>
+    <div id="output" class="mb-3"></div>
+            <script>
+            document.getElementById('upgrade_os').addEventListener('submit', function(event) {
+                event.preventDefault();
+                myButton.disabled = true;
+
+                var host = document.getElementById('host').value;
+                var ipAddress = document.getElementById('image').value;
+                startStream(host, ipAddress);
+            });
+    
+            function startStream(host, ipAddress) {
+                var eventSource = new EventSource(`/upgrade_os_progress_stream/${host}/${ipAddress}`);
+                eventSource.onmessage = function(event) {
+                    var output = document.getElementById('output');
+                    output.innerHTML += event.data + '<br>';
+                };
+                eventSource.onerror = function(error) {
+                    console.log("EventSource failed:", error);
+                    eventSource.close();
+                };
+            }
+        </script>
+</div></div>
+</div>
+{% endblock content %}

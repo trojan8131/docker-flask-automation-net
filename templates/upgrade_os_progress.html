@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<br>
+<div class="bg-light p-3 rounded code-block border border-primary">
+    <h1 class="mb-4">Progress</h1>
+    <div id="sse_data" class="mb-4"></div>
+
+    <script>
+        var sseSource = new EventSource("/upgrade_os_progress_stream");
+        sseSource.onmessage = function(event) {
+            if (event.data === "redirect") {
+                console.log(event.data );
+                window.location.href = "/visualize_topology";
+            } else {
+                document.getElementById("sse_data").innerHTML += event.data + "<br>";
+            }
+        };
+
+        sseSource.onerror = function(error) {
+            console.log("EventSource failed:", error);
+            sseSource.close();
+        };
+    </script>
+</div></div>
+{% endblock content %}

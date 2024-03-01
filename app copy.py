@@ -4,6 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 from tabulate import tabulate
 import yaml
 import time
+from pyvis.network import Network
 
 from nornir import InitNornir
 from nornir_napalm.plugins.tasks import napalm_get
@@ -25,10 +26,9 @@ from unidecode import unidecode
 from pymongo import *
 import re
 import ipaddress
+
+
 import logging
-from pyvis.network import Network
-
-
 
 ############ Flask Config ##########
 logger = logging.getLogger("flask")
@@ -56,7 +56,7 @@ routes={" ":[["/inventory_nornir","Nornir Inventory","Urządzenia z hosts.yaml",
 ["/petrol_station_database","Baza stacji beznzynowych","Baza w MongoDB","success"],
 ["/send_template","Wyślij komendy","Wyślij komendy na urządzenia","success"],
 ["/inventory","Inventura urządzeń","Stwórz tabelę z inventurą urządzeń","success"],
-["/visualize_topology","Topologia sieci","L2 w postaci grafów","success"],
+["/visualize_topology","Topologia sieci","Stwórz tabelę z inventurą urządzeń","success"],
 ["/upgrade_os_form","Upgrade Routera","Wyślij obraz bin na urządzenie","success"],
 ]
 }
@@ -95,7 +95,6 @@ class SendCommands(FlaskForm):
 class UpgradeOS(FlaskForm):
     host = SelectField('Wybierz urządzenie', choices=[])
     image = SelectField('Wybierz Obraz IOS', choices=[])
-
 
 
 
@@ -448,47 +447,63 @@ def download_inventory():
 
 
 
-@app.route('/visualize_topology')
+@app.route('/visualize_topology', methods=['POST',"GET"])
 def visualize_topology():
     cdp_neighbors={}
-
     def find_neighbors(task):
         try:
             result_facts=task.run(task=napalm_get,getters=["get_facts"])
+            print(result_facts.result["get_facts"])
             result=task.run(task=netmiko_send_command,command_string="show cdp neighbors detail", use_textfsm=True)
             task.host["data"]=[]
             for neighbor in result.result:
                 #task.host["data"].append([neighbor["destination_host"],f'{result_facts.result["get_facts"]["fqdn"]}--{neighbor["local_port"]}\n{neighbor["destination_host"]}--{neighbor["remote_port"]}\n'])
                 task.host["data"].append([neighbor["destination_host"],neighbor["local_port"],neighbor["remote_port"]])
+
                 task.host["fqdn"]=result_facts.result["get_facts"]["fqdn"]
         except:
             task.host["data"]=[]
-            task.host["fqdn"]=task.host.name        
-
+            task.host["fqdn"]=task.host.name
+    # Przykładowe dane z sąsiadami CDP
     nr = InitNornir("static/nornir/config.yaml")
     result=nr.run(task=find_neighbors)
+    #print(nornir_inspect(result))
     nr.close_connections()
+    cdp_neighbors={}
+    for host_name,values in nr.inventory.hosts.items():
+        cdp_neighbors[values["fqdn"]]=values["data"]
 
+    # cdp_neighbors = {
+    #     "Switch1": {"Switch2": "Ethernet1/1", "Switch3": "Ethernet1/2"},
+    #     "Switch2": {"Switch1": "Ethernet1/1", "Switch4": "Ethernet1/2"},
+    #     "Switch3": {"Switch1": "Ethernet1/2", "Switch4": "Ethernet1/1"},
+    #     "Switch4": {"Switch2": "Ethernet1/2", "Switch3": "Ethernet1/1"},
+    # }
 
-    for host_name, values in nr.inventory.hosts.items():
-        cdp_neighbors[values["fqdn"]]= values["data"]
+    # Inicjalizacja obiektu Network
+    net = Network('1080px','1920px',directed=True)
+    # Dodanie wierzchołków (urządzeń)
+    for switch in cdp_neighbors:
+        if cdp_neighbors[switch]==[]:
+            
+            net.add_node(switch, label=switch, color = 'red')
+        net.add_node(switch, label=switch,color="#2a5760")
 
-    net= Network("1080px","1920px",directed=True)
-    for device in cdp_neighbors:
-        if cdp_neighbors[device]==[]:
-            net.add_node(device,label=device,color="red")
-        else:
-            net.add_node(device,label=device,color="#2a5760")
-    
+    # Dodanie połączeń między wierzchołkami (połączenia CDP)
     in_graph=[]
-    for local_device,neigbors in cdp_neighbors.items():
-        for neighbor in neigbors:
-            remote_device=neighbor[0]
-            local_port=neighbor[1]
-            remote_port=neighbor[2]
-            if [local_device,remote_port,local_port] not in in_graph:
-                in_graph.append(neighbor)
-                net.add_edge(local_device,remote_device,label=f"{local_port} ---- {remote_port}")
+    for local_switch, neighbors in cdp_neighbors.items():
+        for x in neighbors:
+            
+            
+            remote_switch=x[0]
+            port1=x[1]
+            port2=x[2]
+            if [local_switch,port2,port1] not in in_graph:
+                in_graph.append(x)
+                net.add_edge(local_switch, remote_switch, label=f'{port1 } --- {port2}')
+        
+
+  # Wygenerowanie i zapisanie grafu do pliku HTML
     net.set_options('''const options = {
   "nodes": {
     "font": {
@@ -515,93 +530,14 @@ def visualize_topology():
     }
   }
 }''')
+    
+    #net.show_buttons(filter_=[ 'nodes','edges', 'physics'])
+    net.show("templates/visualize_topology.html", notebook=False)
 
-
-
-    net.show("templates/visualize_topology.html",notebook=False)
-            
     return render_template('visualize_topology.html')
 
 
 
-
-
-@app.route('/upgrade_os_progress_stream/<host>/<image>')
-def upgrade_os_progress_stream(host,image):
-    def generate():
-        yield "data: {}\n\n".format(f"Start Taska -- {host} -- {image}")
-        # ! Inicjacja Nornira
-        nr = InitNornir("static/nornir/config.yaml")
-        # ! Filtrowanie po hoście
-        nr=nr.filter(name=host)
-        # ! Sprawdzenie czy obraz jest juz na urządzeniu
-        result_dir = nr.run(task=netmiko_send_command,command_string="dir") 
-        # ! Jeśli wystąpi problem z podłączeniem do urządzenia i wypisujemy do okna przeglądarki
-        if result_dir[host].failed==True:
-            yield "data: {}\n\n".format(str(result_dir[host].exception).replace("\n","<br>"))  
-            yield "data: {}\n\n".format(f"Koniec Taska -- {host} -- {image}")    
-            return        
-        
-        # ! Sprawdzamy czy obraz znajduje się na urządzeniu
-        if image in result_dir[host].result:
-
-            yield "data: {}\n\n".format(f"Obraz znajduje się już na urządzeniu.")
-            # ! Sprawdzamy czy urządzenie korzysta juz z tego obrazu
-            result_check_version = nr.run(task=netmiko_send_command,command_string="show version",use_textfsm=True) 
-            result_check_version=result_check_version[host].result
-            if image in result_check_version[0]["running_image"]:
-                yield "data: {}\n\n".format(f"Urządzenie korzysta już z tego obrazu.")
-                yield "data: {}\n\n".format(f"Koniec Taska -- {host} -- {image}")    
-                return
-            else:
-                yield "data: {}\n\n".format(f"Urządzenie korzysta z innego obrazu:  {result_check_version[0]['running_image']} != {image}")
-
-        # ! jeśli obraz nie znajduje się na urządzeniu
-        else:
-            # ! włączamy SCP
-            result=nr.run(netmiko_send_config,config_commands=["ip tcp window-size 65535","ip scp server enable","config-register 0x2102"])
-            yield "data: {}\n\n".format("Przesłano Komendy:")  
-            yield "data: {}\n\n".format(str(result[host].result).replace("\n","<br>"))
-            # ! Po SCP wrzucamy obraz na urządzenie 
-            yield "data: {}\n\n".format(f"Rozpoczynam wysyłanie obrazu na {host}!")
-            result = nr.run(
-                    task=netmiko_file_transfer,
-                    source_file=f"/opt/ios_files/{image}", 
-                    dest_file=image, 
-                    direction="put", 
-                    overwrite_file=False
-                )  
-            print(nornir_inspect(result))
-            # ! Sprawdzamy czy wystąpił błąd, Przykładowo brak miejsca 
-            if result[host].failed==True:
-                try:
-                    error=re.search(r"(ValueError.+)",result[host].result).group(1)
-                except:
-                    error=result[host].result.replace("\n"," ")
-                yield "data: {}\n\n".format(error)  
-                yield "data: {}\n\n".format(f"Koniec Taska -- {host} -- {image}")    
-                return
-            yield "data: {}\n\n".format(f"Obraz przesłany !")
-
-        # ! Sprawdzamy w konfigu z jakiego obrazu bootuje się system
-        result_check_boot = nr.run(task=netmiko_send_command,command_string="show run | i boot system",use_textfsm=True) 
-        commands=[]
-        # ! Usuwamy te linie z konfiguracji
-        for line in str(result_check_boot[host].result).splitlines():
-            commands.append(f"no {line}")
-        # ! Dodajemy nowe źródło bootowania
-        commands.append(f"boot system flash {image}")
-        commands.append("end")
-        # ! Zapisujemy konfig
-        commands.append("wr")
-        result=nr.run(netmiko_send_config,config_commands=commands,read_timeout=120,cmd_verify= False)
-        yield "data: {}\n\n".format("Przesłano Komendy:")  
-        yield "data: {}\n\n".format(str(result[host].result).replace("\n","<br>"))  
-        # ! Reload
-        result=nr.run(netmiko_send_config,config_commands=["do reload","yes","yes"],read_timeout=120,cmd_verify= False)
-        yield "data: {}\n\n".format("Reload urządzenia.")     
-        yield "data: {}\n\n".format(f"Koniec Taska -- {host} -- {image}")    
-    return Response(stream_with_context(generate()), mimetype='text/event-stream')
 
 
 @app.route('/upgrade_os_form', methods=['POST',"GET"])
@@ -617,6 +553,19 @@ def upgrade_os_form():
     files = glob.glob(f'{path}*.bin')
     form.image.choices=[(image.replace(path,""), image.replace(path,"")) for image in files]
     return render_template('upgrade_os_form.html',form=form)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # * Start serwisu
 if __name__ == "__main__":
