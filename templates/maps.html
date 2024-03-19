@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="bg-light p-3 rounded code-block border border-primary">
+    <head>
+        <title>Mapa</title>
+        <script  async   src="https://maps.googleapis.com/maps/api/js?key={{key}}&loading=async&callback=initMap"        ></script>
+        <script>
+            function initMap() {
+                var locations = {{ map_markers | tojson }};
+    
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 5,
+                    center: {lat: 52.237049, lng: 21.017532} // Centrum Polski
+                });
+    
+                var infowindow = new google.maps.InfoWindow();
+    
+                for (var device in locations) {
+                    var marker = new google.maps.Marker({
+                        position: {lat: locations[device].lat, lng: locations[device].lng},
+                        map: map,
+                        title: device // Nazwa markera to nazwa urządzenia
+                    });
+    
+                    google.maps.event.addListener(marker, 'click', (function(marker) {
+                        return function() {
+                            infowindow.setContent(marker.title);
+                            infowindow.open(map, marker);
+                        }
+                    })(marker));
+                }
+            }
+        </script>
+    </head>
+    <body onload="initMap()">
+        <div id="map" style="height: 500px; width: 100%;"></div>
+    </body>
+</div>
+{% endblock content %}
+

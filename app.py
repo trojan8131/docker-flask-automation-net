@@ -4,6 +4,8 @@ from jinja2 import Environment, FileSystemLoader
 from tabulate import tabulate
 import yaml
 import time
+from flask import Flask
+
 
 from nornir import InitNornir
 from nornir_napalm.plugins.tasks import napalm_get
@@ -27,6 +29,12 @@ import re
 import ipaddress
 import logging
 from pyvis.network import Network
+import googlemaps
+import subprocess
+from flask_crontab import Crontab
+from flask_apscheduler import APScheduler
+
+
 
 
 
@@ -36,6 +44,20 @@ logger = logging.getLogger("flask")
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret_key'
 app.app_context().push()
+GOOGLE_KEY="KLUCZ"
+
+
+############ Flask APScheduler ########
+
+class Config:
+    SCHEDULER_API_ENABLED = True
+    SCHEDULER_API_PREFIX="/scheduler"
+app.config.from_object(Config())
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
+#######################################
 
 try:
     print("RESTART")
@@ -58,6 +80,7 @@ routes={" ":[["/inventory_nornir","Nornir Inventory","Urządzenia z hosts.yaml",
 ["/inventory","Inventura urządzeń","Stwórz tabelę z inventurą urządzeń","success"],
 ["/visualize_topology","Topologia sieci","L2 w postaci grafów","success"],
 ["/upgrade_os_form","Upgrade Routera","Wyślij obraz bin na urządzenie","success"],
+["/maps","Mapa lokalizacji","GoogleMaps z lokalizacjami urządzeń sieciowych","success"],
 ]
 }
 
@@ -617,6 +640,61 @@ def upgrade_os_form():
     files = glob.glob(f'{path}*.bin')
     form.image.choices=[(image.replace(path,""), image.replace(path,"")) for image in files]
     return render_template('upgrade_os_form.html',form=form)
+
+
+
+
+
+@app.route("/maps")
+def maps():
+    # ! Pobranie inventory
+    nr = InitNornir("static/nornir/config.yaml")
+    inventory=nr.inventory.dict()
+    hosts=inventory["hosts"]
+    map_markers={}
+    # ! inicjacja obiektu googlemaps
+    gmaps = googlemaps.Client(key=GOOGLE_KEY)
+    for host_name,data in hosts.items():
+        geocode_result = gmaps.geocode(data["data"]["location"])
+        if geocode_result:
+            map_markers[host_name+" - IP:  "+data["hostname"]]=geocode_result[0]['geometry']['location']
+
+    return render_template('maps.html', map_markers=map_markers,key=GOOGLE_KEY)
+
+@scheduler.task('interval', id='check_sessions_DC_R1', minutes=10)
+def check_sessions_DC_R1():
+    status=""
+    # ! Inicjacja Nornira
+    nr = InitNornir("static/nornir/config.yaml")
+    # ! Filtrowanie po hoście
+    nr=nr.filter(name="DC-R1")
+    result_dir = nr.run(task=netmiko_send_command,command_string="show crypto session detail", use_textfsm=True)
+    nr.close_connections()
+    #print(nornir_inspect(result_dir)) 
+    if result_dir["DC-R1"].failed:
+        status="\"Problem z podłączeniem do urządzenia\""
+    else:
+        if result_dir["DC-R1"].result==None:
+            status="\"Brak Aktywnych Tuneli\""
+        else:
+            for session in result_dir["DC-R1"].result:
+                if session["session_status"] != 'UP-ACTIVE':
+                    status=status+f'\"DC-R1, session to peer {session["peer"]} in {session["session_status"]}  Status\"'+"\n"
+                #pprint(session)
+
+    if status=="":
+        status="0"    
+
+    args = ['zabbix_sender', '-z', '192.168.1.80', '-p', '10051', '-s', 'DC-R1', '-k', 'custom.network.session_error', '-o', status]
+
+    # Wywołaj polecenie zabbix_sender
+    try:
+        subprocess.run(args, check=True)
+        print("Polecenie zakończone pomyślnie.")
+    except subprocess.CalledProcessError as e:
+        print(f"Błąd podczas wykonywania polecenia: {e}")
+
+
 
 # * Start serwisu
 if __name__ == "__main__":
